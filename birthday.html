@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Happy Birthday Surprise</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #ffe6f0, #f0e6ff);
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+    header {
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: bold;
+      color: #d63384;
+    }
+    h1 {
+      text-align: center;
+      margin-top: 1rem;
+      color: #333;
+    }
+    .cards {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+      margin: 2rem;
+    }
+    .card {
+      width: 250px;
+      background: #fff;
+      border-radius: 1rem;
+      padding: 1rem;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+      cursor: grab;
+    }
+    .card img {
+      width: 100%;
+      border-radius: 0.5rem;
+    }
+    .gift-section {
+      text-align: center;
+      margin: 2rem;
+    }
+    .gift-btn {
+      background: linear-gradient(90deg, #ff66b2, #8a2be2);
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: 1rem;
+      font-size: 1.2rem;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.6);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      visibility: hidden;
+    }
+    .modal-content {
+      background: #fff;
+      border-radius: 1rem;
+      padding: 2rem;
+      max-width: 600px;
+      text-align: center;
+      position: relative;
+    }
+    .close-btn {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: #ff6b6b;
+      border: none;
+      color: #fff;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      cursor: pointer;
+    }
+    .fireworks {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: black;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      color: white;
+      font-size: 2rem;
+      text-align: center;
+    }
+    audio {
+      position: fixed;
+      bottom: 1rem;
+      right: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>🎉 Birthday Surprise</div>
+    <div>For Priya 🩷✨</div>
+  </header>
+  <h1>Happy Birthday Priya! 🩷✨</h1>
+  <p style="text-align:center">I made a little world of memories for you to explore. Drag the cards, open the gift, and enjoy the grand finale ✨</p>
+
+  <div class="cards">
+    <div class="card" draggable="true">
+      <img src="https://images.unsplash.com/photo-1501973801540-537f08ccae7b" alt="Golden Hour">
+      <p>Every sunset with you feels magical.</p>
+    </div>
+    <div class="card" draggable="true">
+      <img src="https://images.unsplash.com/photo-1511920170033-f8396924c348" alt="Cake">
+      <p>Wishing you sweetness in every moment of life.</p>
+    </div>
+    <div class="card" draggable="true">
+      <img src="https://images.unsplash.com/photo-1517260739337-6736d926b979" alt="Smile">
+      <p>Your smile makes the world brighter.</p>
+    </div>
+    <div class="card" draggable="true">
+      <img src="https://media.giphy.com/media/3oEduQAsYcJKQH2XsI/giphy.gif" alt="Puppy">
+      <p>Because you deserve happiness as pure as this little one!</p>
+    </div>
+  </div>
+
+  <div class="gift-section">
+    <button class="gift-btn" onclick="openGift()">🎁 Open Your Surprise</button>
+  </div>
+
+  <div class="modal" id="giftModal">
+    <div class="modal-content">
+      <button class="close-btn" onclick="closeGift()">×</button>
+      <h2>💌 A Letter Just For You</h2>
+      <p>Dear Priya,<br><br>
+      On your special day, I just want to remind you how much you mean to me. You’ve been my sunshine, my laughter, and my safe place.<br>
+      May your year be full of joy, cozy moments, and big wins.<br><br>
+      Happy Birthday! 🩷<br>— From Someone who cares</p>
+      <button class="gift-btn" onclick="launchFinale()">✨ Final Surprise</button>
+    </div>
+  </div>
+
+  <div class="fireworks" id="fireworks">
+    <h1>🎆 Happy Birthday Priya! 🎆</h1>
+    <p>You are a constellation of little moments that make life shine ✨</p>
+    <canvas id="fireCanvas"></canvas>
+  </div>
+
+  <audio id="bgm" controls autoplay loop>
+    <source src="https://cdn.pixabay.com/audio/2022/03/15/audio_6a2a04a5b7.mp3" type="audio/mp3">
+  </audio>
+
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script>
+    // Confetti on load
+    window.onload = () => {
+      for (let i = 0; i < 3; i++) {
+        setTimeout(() => {
+          confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+        }, i * 500);
+      }
+    };
+
+    // Gift modal
+    function openGift() {
+      document.getElementById('giftModal').style.visibility = 'visible';
+    }
+    function closeGift() {
+      document.getElementById('giftModal').style.visibility = 'hidden';
+    }
+
+    // Fireworks
+    function launchFinale() {
+      document.getElementById('giftModal').style.visibility = 'hidden';
+      document.getElementById('fireworks').style.display = 'flex';
+      startFireworks();
+    }
+
+    function startFireworks() {
+      const duration = 15 * 1000;
+      const end = Date.now() + duration;
+
+      (function frame() {
+        confetti({
+          particleCount: 5,
+          angle: 60,
+          spread: 55,
+          origin: { x: 0 },
+          colors: ['#bb0000', '#ffffff']
+        });
+        confetti({
+          particleCount: 5,
+          angle: 120,
+          spread: 55,
+          origin: { x: 1 },
+          colors: ['#3333ff', '#ff33ff']
+        });
+        if (Date.now() < end) {
+          requestAnimationFrame(frame);
+        }
+      })();
+    }
+  </script>
+</body>
+</html>
